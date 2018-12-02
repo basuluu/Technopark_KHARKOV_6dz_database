@@ -32,7 +32,6 @@ class MAKE_DB():
         self.create_post()
         self.create_blog_post()
         self.create_comment()
-        self.create_index()
         
     def create_users(self):
         sql = """CREATE TABLE Users
@@ -107,14 +106,6 @@ class MAKE_DB():
                     Foreign key(Id_user) references Users(Id)
                 );"""
         self.sql_send(sql)
-        
-    def create_index(self):
-        sql = ["CREATE INDEX post_user ON Comment(Id_post, Id_user);",
-               "CREATE INDEX log ON Users(Login);",
-               "CREATE INDEX blog_post ON Blog_Post(Id_blog, Id_post);"]
-        for message in sql:
-            self.sql_send(message)
-        
         
     def run(self, db_name):
         self.build_db(db_name)
