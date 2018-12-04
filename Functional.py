@@ -260,23 +260,20 @@ class Functional():
         return text
     
     def get_comment_history(self, users, blog_id):
-        posts = []
-        comments = {}
-        for user_id in users:
-            comments[user_id] = []
-        sql = """Select Id_post
-                 From Blog_Post
-                 where Id_blog = '{}'""".format(blog_id)
+        if isinstance(users, list):
+            users = tuple(users)
+        sql = """Select Id_user, Text 
+                 From Comment 
+                 Where Id_user in {} and 
+                 Id_post in (Select Id_Post 
+                             From Blog_Post 
+                             Where Id_Blog={});""".format(users, blog_id)
         ans = self.sql_send(sql)
-        if len(ans):
-            for res in ans:
-                posts.append(res['Id_post'])
-        else:
-            print('No comments in this blog, cause no posts')
-        for post_id in posts:
-            for user_id in users:
-                ans = self.get_user_comment(post_id, user_id)
-                if len(ans):
-                    comments[user_id].append(ans[0]['Text'])
+        comments = {}
+        for res in ans:
+            user_id = res['Id_user']
+            if user_id not in comments.keys():
+                comments[user_id] = []
+            else:
+                comments[user_id].append(res['Text'])
         return comments
-    
