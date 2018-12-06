@@ -88,13 +88,13 @@ class db_upload():
         comments_ins = []
         buffer = collections.deque()
         comment_id = 0
-        buff_size = round(self.posts * 0.05)
+        buff_size = round(self.posts * 0.1)
         for _ in range(self.comments):
             user_id = random.randint(1, self.users)
             post_id = random.randint(1, self.posts)
             text = self.fake.sentence(random.randint(1, comment_len))
             for tmp in buffer:
-                if post_id in tmp:
+                if post_id == tmp[1]:
                     comment_id = tmp[0]
                     break
                 comment_id = 0
